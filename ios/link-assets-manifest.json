@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "Assets/Fonts/Formula1-Bold.otf",
+      "sha1": "a73b7f1e3b7e5ed4f9f563308724c396c59bf88c"
+    },
+    {
+      "path": "Assets/Fonts/Formula1-Regular.otf",
+      "sha1": "9ce90c1e5ffb71e6c9fc82b5753b93cf705d85ed"
+    },
+    {
+      "path": "Assets/Fonts/Formula1-Wide.otf",
+      "sha1": "963e0d00eb77ed4409b4995e269ec1c974608431"
+    },
+    {
+      "path": "Assets/Fonts/PPNeueMachina_ Light.ttf",
+      "sha1": "3eb53a017402bd29a7e8da0ddd3cb470d6dc7e11"
+    },
+    {
+      "path": "Assets/Fonts/radikal_thin-webfont.ttf",
+      "sha1": "08baa6c5ae6cecb758300ee543472947498b0da4"
+    },
+    {
+      "path": "Assets/Fonts/zen dots.ttf",
+      "sha1": "a43dcaf793a3f9720e52bd68911025e3d2fed22f"
+    }
+  ]
+}
