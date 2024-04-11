@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/actions/cart';
 import { gql, useMutation, useQuery } from '@apollo/client';
-import useGetProducts from './hooks/useGetProducts';
 
 const GET_SINGLE_PRODUCT_DETAILS = gql`
     query GetSingleProductDetails($id : ID){
@@ -165,7 +164,7 @@ const ProductDetail = ({ route, navigation }) => {
     };
     
     // custom hooks 
-    const {loading:l1, error: er,data:d1} = useGetProducts();
+ 
     
     return (
         <>

@@ -63,7 +63,7 @@ function useGetProducts() {
     const [productsData, SetProductsData] = useState([]);
     
 
-    const {loading, error, data} = useQuery(GET_ALL_PRODUCTS, {
+    const {loading, error, data, fetchMore} = useQuery(GET_ALL_PRODUCTS, {
         variables: {
             first: 10,
         },
@@ -73,9 +73,32 @@ function useGetProducts() {
             SetProductsData(data?.products?.edges);
         }
     })
-    console.log(data, 'Data')
+    console.log(productsData, 'Data')
 
-    return  {loading, error, data};
+
+    const loadMoreData = () => {
+        if (hasNextPage) {
+            fetchMore({
+                variables:{
+                    first: 10,
+                    after: cursor,
+                },
+                updateQuery: (prev, {fetchMoreResult}) => {
+                    setHasNextPage(fetchMoreResult.products?.pageInfo?.hasNextPage);
+                    setCursor(fetchMoreResult.products?.pageInfo?.endCursor);
+                    SetProductsData([...productsData , ...fetchMoreResult.products?.edges])
+                }
+            });
+        }
+    }
+
+    return  {
+        loading, 
+        error, 
+        data : productsData,
+        hasNextPage,
+        loadMoreData,
+    };
 
 }
 

@@ -3,89 +3,58 @@ import React, { useState, useEffect } from 'react';
 import { View, FlatList, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SelectedProduct } from '../../redux/actions/productDetail';
+import useGetProducts from '../hooks/useGetProducts';
 
-const GET_ALL_PRODUCTS = gql`
-    query GetAllProducts($first: Int, $after: String) {
-        products(first: $first, after: $after) {
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-            edges {
-                node {
-                    images(first: 1){
-                        edges {
-                            node{
-                                url
-                            }
-                        }
-                    }
-                    title
-                    id
-                    descriptionHtml
-                    description
-                    priceRange{
-                        minVariantPrice{
-                            amount
-                        }
-                    }
-                    variants(first:5){
-                        edges{
-                            node{
-                                image{
-                                    url
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-`;
+//     query GetAllProducts($first: Int, $after: String) {
+//         products(first: $first, after: $after) {
+//             pageInfo {
+//                 endCursor
+//                 hasNextPage
+//             }
+//             edges {
+//                 node {
+//                     images(first: 1){
+//                         edges {
+//                             node{
+//                                 url
+//                             }
+//                         }
+//                     }
+//                     title
+//                     id
+//                     descriptionHtml
+//                     description
+//                     priceRange{
+//                         minVariantPrice{
+//                             amount
+//                         }
+//                     }
+//                     variants(first:5){
+//                         edges{
+//                             node{
+//                                 image{
+//                                     url
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// `;
 
 const Dashboard = ({ navigation }) => {
-    const [cursor, setCursor] = useState('');
-    const [hasNextPage, setHasNextPage] = useState(false);
-    const [allProducts, setAllProducts] = useState([]);
+
+    const {
+        loading, 
+        error,
+        data:productsData,
+        hasNextPage,
+        loadMoreData, } = useGetProducts();
 
     const dispatch = useDispatch();
 
-    const { loading, error, data, fetchMore } = useQuery(GET_ALL_PRODUCTS, {
-        variables: {
-            first: 10,
-        },
-        onCompleted: (data) => {
-            setCursor(data.products.pageInfo.endCursor);
-            setHasNextPage(data.products.pageInfo.hasNextPage);
-            setAllProducts(data.products.edges);
-        }
-    });
-    // console.log(cursor, "cursosr")
-    // console.log(hasNextPage, "nexy")
-    console.log(allProducts, "All products");
-
-    // a function to load more prodcut when reach on the end of scrolling
-    const loadMore = () => {
-        if (hasNextPage) {
-            fetchMore({
-                variables: {
-                    after: cursor,
-                    first: 10,
-                },
-                updateQuery: (prev, { fetchMoreResult }) => {
-                    setHasNextPage(fetchMoreResult.products.pageInfo.hasNextPage);
-                    setCursor(fetchMoreResult.products.pageInfo.endCursor);
-                    setAllProducts([...allProducts, ...fetchMoreResult.products.edges]);
-                }
-            });
-        }
-    }
-
-
-    // const handleClick = (item) => {
-    //     navigation.navigate('ProductDetail', { product: item });
-    // };
 
     const handleProductSelect = (product) => {
         dispatch(SelectedProduct(product));
@@ -104,11 +73,13 @@ const Dashboard = ({ navigation }) => {
                     }
                 />
 
-                <Text style={styles.title} numberOfLines={4}>$ {item.node?.priceRange?.minVariantPrice?.amount}</Text>
+                <Text style={styles.title} numberOfLines={4}>$ {item.node?.variants?.edges[0]?.node?.price?.amount}</Text>
                 <Text style={styles.description} numberOfLines={4}>{item.node?.title}</Text>
             </View>
         </TouchableOpacity>
     );
+
+    console.log('all function data', productsData)
 
     if (loading) {
         return (
@@ -121,11 +92,11 @@ const Dashboard = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <FlatList
-                data={allProducts}
+                data={productsData}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 numColumns={2}
-                onEndReached={() => loadMore()}
+                onEndReached={() => loadMoreData()}
                 onEndReachedThreshold={0.5}
             />
         </View >
