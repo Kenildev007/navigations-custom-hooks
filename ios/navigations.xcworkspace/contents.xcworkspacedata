@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:navigations.xcodeproj">
+      location = "group:fonts">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
